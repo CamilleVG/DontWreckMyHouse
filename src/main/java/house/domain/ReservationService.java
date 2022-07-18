@@ -39,7 +39,7 @@ public class ReservationService {
             return new ArrayList<Reservation>();
         }
         return resRepo.findAll(host.getId()).stream()
-                .filter(i -> LocalDate.now().isBefore(LocalDate.parse(i.getStartDate().toString())))
+                .filter(r -> (LocalDate.now().equals(r.getStartDate())|| LocalDate.now().isBefore(r.getStartDate())))
                 .sorted((a, b) -> a.getStartDate().compareTo(b.getStartDate()))
                 .collect(Collectors.toList());
     }
@@ -170,9 +170,16 @@ public class ReservationService {
         calculateTotal(reservation); //sets the total field of reservation object
 
         List<LocalDate> takenDates = new ArrayList<>();
+
         for (Reservation res : this.findAllFuture(reservation.host)) {
+            if (reservation.getId() != null) {  //if the reservation is already in the repo and being edited
+                if (res.getId() == reservation.getId()) {
+                    continue;
+                }
+            }
             takenDates.addAll(datesList(res));
         }
+
         List<LocalDate> reservationDates = datesList(reservation);
 
         for (int i = 0; i <= reservationDates.size() - 2; i++){
@@ -184,7 +191,7 @@ public class ReservationService {
 
     private void validateNoDuplicates(Reservation reservation, Result<Reservation> result) {
         List<Reservation> reservations = resRepo.findAll(reservation.host.getId()).stream()
-                .filter(r -> (r.getGuestID() == reservation.getGuestID() && r.getStartDate().equals(reservation.getStartDate()) && r.getStartDate().equals(reservation.getStartDate())))
+                .filter(r -> (r.getId() != reservation.getId() && r.getGuestID() == reservation.getGuestID() && r.getStartDate().equals(reservation.getStartDate()) && r.getStartDate().equals(reservation.getStartDate())))
                 .collect(Collectors.toList());  //date, Item, and Forager
         if (!reservations.isEmpty()) {
             result.addErrorMessage("Duplicate found.  Reservation already exists.");
@@ -203,7 +210,7 @@ public class ReservationService {
         BigDecimal total = new BigDecimal(0);
         List<LocalDate> totalDates = datesList(res);
         for (int i = 0; i <= totalDates.size() - 2; i++) {
-            if (totalDates.get(i).getDayOfWeek().equals(DayOfWeek.FRIDAY) || totalDates.get(i).getDayOfWeek().equals(DayOfWeek.SATURDAY) || totalDates.get(i).getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+            if (totalDates.get(i).getDayOfWeek().equals(DayOfWeek.FRIDAY) || totalDates.get(i).getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
                 total = total.add(res.host.getWeekendRate());
             }else {
                 total = total.add(res.host.getStandardRate());

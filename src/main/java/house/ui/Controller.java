@@ -106,8 +106,7 @@ public class Controller {
         }
         this.view.displayHeader("Editing Reservation " + resID);
         Reservation r = this.reservationService.findById(host, resID);
-        r.setStartDate(view.getStart());
-        r.setEndDate(view.getEnd());
+        view.editDates(r);
 
         try {
             reservationService.calculateTotal(r);

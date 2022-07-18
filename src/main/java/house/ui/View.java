@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.FormatStyle;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -58,14 +59,14 @@ public class View {
     }
     public void displayReservations(List<Reservation> reservations) {
         if (reservations == null || reservations.isEmpty()) {
-            io.println("\nHost currently has no reservations listed.  Select any future date.");
+            io.println("\nHost currently has no reservations listed.");
             return;
         }
         for (Reservation res: reservations) {  //id,start_date,end_date,guest_id,total
             io.printf("ID: %s, Start: %s, End: %s, Guest ID: %s, Total: $%.2f \n",
                     res.getId(),
-                    res.getStartDate().toString(),
-                    res.getEndDate().toString(),
+                    res.getStartDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                    res.getEndDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
                     res.getGuestID().toString(),
                     res.getTotal()
             );
@@ -88,8 +89,8 @@ public class View {
     public boolean summaryOK(Reservation r, MainMenuOption option) {
         this.displayHeader("Summary");
         if (option == MainMenuOption.MAKE_RESERVATION || option == MainMenuOption.EDIT_RESERVATION){
-            this.io.println("Start: " + r.getStartDate());
-            this.io.println("End: " + r.getEndDate());
+            this.io.println("Start: " + r.getStartDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+            this.io.println("End: " + r.getEndDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
             this.io.println(r.getTotal() == null ? "Total: NA" : "Total: $" + r.getTotal());
         }
         if (option == MainMenuOption.CANCEL_RESERVATION) {
@@ -116,5 +117,19 @@ public class View {
     }
     public LocalDate getEnd() {
         return this.io.readLocalDate("End (mm/dd/yyyy): ");
+    }
+
+    public void editDates(Reservation r) {
+        String formattedDate = r.getStartDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDate start = this.io.editLocalDate(String.format("Start (%s): ", formattedDate));
+        formattedDate = r.getEndDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDate end = this.io.editLocalDate(String.format("End (%s): ", formattedDate));
+
+        if (start != null) {
+            r.setStartDate(start);
+        }
+        if (end != null) {
+            r.setEndDate(start);
+        }
     }
 }

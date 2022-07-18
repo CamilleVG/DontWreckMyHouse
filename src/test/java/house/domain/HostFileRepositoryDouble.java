@@ -45,7 +45,7 @@ public class HostFileRepositoryDouble implements HostRepository {
     @Override
     public Host findByEmail(String email) {
         for (Host h : hosts) {
-            if (h.getEmail() == email) {
+            if (h.getEmail().equals(email)) {
                 return h;
             }
         }

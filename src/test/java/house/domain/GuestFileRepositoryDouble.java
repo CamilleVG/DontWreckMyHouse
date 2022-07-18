@@ -20,16 +20,6 @@ public class GuestFileRepositoryDouble implements GuestRepository {
         guest.setPhone("(412) 6493981");
         guest.setState("PA");
         guests.add(guest);
-        guest.setId(2);
-        guest.setEmail("leoroar3@gmail.com");
-        guests.add(guest);
-        guest.setId(3);
-        guest.setEmail("topgun3@example.com");
-        guests.add(guest);
-        guest.setId(4);
-        guest.setEmail("luckygrinch@yahoo.com");
-        guests.add(guest);
-
     }
 
     @Override
@@ -41,6 +31,16 @@ public class GuestFileRepositoryDouble implements GuestRepository {
     public Guest findById(int id) {
         for(Guest g : guests) {
             if (g.getId() == id){
+                return g;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Guest findByEmail(String email) {
+        for(Guest g : guests) {
+            if (g.getEmail().equals(email)){
                 return g;
             }
         }

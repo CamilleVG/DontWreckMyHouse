@@ -1,6 +1,9 @@
 package house.domain;
 
 import house.data.DataException;
+import house.model.Guest;
+import house.model.Host;
+import house.model.Reservation;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -13,42 +16,37 @@ public class ReservationServiceTest {
             new HostFileRepositoryDouble(),
             new GuestFileRepositoryDouble());
 
-    @Test
-    void shouldAdd() throws DataException {
-/*
-        Forage forage = new Forage();
-        forage.setDate(LocalDate.now());
-        forage.setForager(ForagerRepositoryDouble.FORAGER);
-        forage.setItem(ItemRepositoryDouble.ITEM);
-        forage.setKilograms(0.5);
+    HostService hostService = new HostService(new HostFileRepositoryDouble());
+    GuestService guestService = new GuestService(new GuestFileRepositoryDouble());
 
-        Result<Forage> result = service.add(forage);
+    @Test
+    void shouldAdd() {
+        Host host = hostService.findByEmail("cmactimpany1u@ebay.com");
+        Guest guest = guestService.findByEmail("lgueny3@example.com");
+        LocalDate endDate = LocalDate.now().plusDays(1);
+        Reservation res = new Reservation(host, guest, LocalDate.now(), endDate);
+
+        Result<Reservation> result = service.add(res);
         assertTrue(result.isSuccess());
         assertNotNull(result.getPayload());
-        assertEquals(36, result.getPayload().getId().length());
-
- */
+        assertEquals(1, result.getPayload().getId());
     }
 
     @Test
-    void shouldNotAddWhenForagerNotFound() throws DataException {
-        /*
+    void shouldUpdate() {
+        Host host = hostService.findByEmail("cmactimpany1u@ebay.com");
+        Guest guest = guestService.findByEmail("lgueny3@example.com");
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = LocalDate.now().plusDays(1);
+        Reservation res = new Reservation(host, guest, startDate, endDate);
 
-        Forager forager = new Forager();
-        forager.setId("30816379-188d-4552-913f-9a48405e8c08");
-        forager.setFirstName("Ermengarde");
-        forager.setLastName("Sansom");
-        forager.setState("NM");
-
-        Forage forage = new Forage();
-        forage.setDate(LocalDate.now());
-        forage.setForager(forager);
-        forage.setItem(ItemRepositoryDouble.ITEM);
-        forage.setKilograms(0.5);
-
-        Result<Forage> result = service.add(forage);
-        assertFalse(result.isSuccess());
-
-         */
+        Result<Reservation> result = service.add(res);
+        startDate = LocalDate.now().plusDays(26);
+        endDate = LocalDate.now().plusDays(30);
+        res.setStartDate(startDate);
+        res.setEndDate(endDate);
+        assertTrue(result.isSuccess());
+        assertNotNull(result.getPayload());
+        assertEquals(1, result.getPayload().getId());
     }
 }

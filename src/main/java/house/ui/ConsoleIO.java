@@ -115,10 +115,24 @@ public class ConsoleIO {
                 try {
                     return LocalDate.parse(input, this.formatter);
                 } catch (DateTimeParseException var4) {
-                    this.println("[INVALID] Enter a date in mm/dd/yyyy format.");
+                    this.println("[INVALID] Enter a date in MM/dd/yyyy format.");
                 }
             }
         }
+
+    public LocalDate editLocalDate(String prompt) {
+        while(true) {
+            String input = this.readString(prompt);
+            try {
+                if (input.isBlank()){
+                    return null;
+                }
+                return LocalDate.parse(input, this.formatter);
+            } catch (DateTimeParseException var4) {
+                this.println("[INVALID] Enter a date in mm/dd/yyyy format.");
+            }
+        }
+    }
 
         public BigDecimal readBigDecimal(String prompt) {
             while(true) {
