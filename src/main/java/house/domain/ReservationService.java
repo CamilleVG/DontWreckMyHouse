@@ -29,7 +29,9 @@ public class ReservationService {
         if (host == null){
             return new ArrayList<Reservation>();
         }
-        return resRepo.findAll(host.getId());
+        return resRepo.findAll(host.getId()).stream()
+                .sorted((a, b) -> a.getStartDate().compareTo(b.getStartDate()))
+                .collect(Collectors.toList());
     }
     public List<Reservation> findAllFuture(Host host) {
         host = hostRepo.findByEmail(host.getEmail());
@@ -38,6 +40,7 @@ public class ReservationService {
         }
         return resRepo.findAll(host.getId()).stream()
                 .filter(i -> LocalDate.now().isBefore(LocalDate.parse(i.getStartDate().toString())))
+                .sorted((a, b) -> a.getStartDate().compareTo(b.getStartDate()))
                 .collect(Collectors.toList());
     }
 
