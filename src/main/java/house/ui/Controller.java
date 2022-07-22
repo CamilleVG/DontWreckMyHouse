@@ -59,6 +59,10 @@ public class Controller {
     private void cancelReservation() {
         this.view.displayHeader(MainMenuOption.CANCEL_RESERVATION.getMessage());
         Host host = hostService.findByEmail(view.getHost());
+        if (host == null) {
+            this.view.displayStatus(false, "Host email not found in database.");
+            return;
+        }
         List<Reservation>  allFuture = this.reservationService.findAllFuture(host);
         this.view.displayReservations(allFuture);
 
@@ -106,6 +110,7 @@ public class Controller {
         }
         this.view.displayHeader("Editing Reservation " + resID);
         Reservation r = this.reservationService.findById(host, resID);
+
         view.editDates(r);
 
         try {
@@ -144,6 +149,10 @@ public class Controller {
         Guest guest = guestService.findByEmail(view.getGuest());
         if (host == null) {
             this.view.displayStatus(false, "Host email not found in database.");
+            return;
+        }
+        if (guest == null) {
+            this.view.displayStatus(false, "Guest email not found in database.");
             return;
         }
         List<Reservation>  allFuture = this.reservationService.findAllFuture(host);

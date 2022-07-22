@@ -185,6 +185,7 @@ public class ReservationService {
         for (int i = 0; i <= reservationDates.size() - 2; i++){
             if (takenDates.contains(reservationDates.get(i))) {
                 result.addErrorMessage("Reservation dates conflict.");
+                break;
             }
         }
     }

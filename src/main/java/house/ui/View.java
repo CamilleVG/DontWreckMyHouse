@@ -91,7 +91,7 @@ public class View {
         if (option == MainMenuOption.MAKE_RESERVATION || option == MainMenuOption.EDIT_RESERVATION){
             this.io.println("Start: " + r.getStartDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
             this.io.println("End: " + r.getEndDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-            this.io.println(r.getTotal() == null ? "Total: NA" : "Total: $" + r.getTotal());
+            this.io.println(r.getTotal() == null ? "Total: NA" : String.format("Total: $%.2f", r.getTotal()));
         }
         if (option == MainMenuOption.CANCEL_RESERVATION) {
             this.io.println("Cancelling Reservation " + r.getId());
@@ -129,7 +129,7 @@ public class View {
             r.setStartDate(start);
         }
         if (end != null) {
-            r.setEndDate(start);
+            r.setEndDate(end);
         }
     }
 }
