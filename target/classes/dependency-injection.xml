@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="io" class="house.ui.ConsoleIO">
+    </bean>
+    <bean id="view" class="house.ui.View">
+        <constructor-arg ref="io"/>
+    </bean>
+    <bean id="guestRepo" class="house.data.GuestFileRepository">
+        <constructor-arg value="dont-wreck-my-house-data/guests.csv"/>
+    </bean>
+    <bean id="hostRepo" class="house.data.HostFileRepository">
+        <constructor-arg value="dont-wreck-my-house-data/hosts.csv"/>
+    </bean>
+    <bean id="resRepo" class="house.data.ReservationFileRepository">
+        <constructor-arg value="dont-wreck-my-house-data/reservations"/>
+    </bean>
+    <bean id="guestService" class="house.domain.GuestService">
+        <constructor-arg ref="guestRepo"/>
+    </bean>
+    <bean id="hostService" class="house.domain.HostService">
+        <constructor-arg ref="hostRepo"/>
+    </bean>
+    <bean id="resService" class="house.domain.ReservationService">
+        <constructor-arg ref="guestRepo"/>
+        <constructor-arg ref="hostRepo"/>
+        <constructor-arg ref="resRepo"/>
+    </bean>
+    <bean class="house.ui.Controller">
+        <constructor-arg ref="guestService"/>
+        <constructor-arg ref="hostService"/>
+        <constructor-arg ref="resService"/>
+        <constructor-arg ref="view"/>
+    </bean>
+</beans>
+
